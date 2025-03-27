@@ -1,72 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Toolbar from "./Toolbar";
 import ThemeSidebar from "./ThemeSidebar";
 
 const MergedSlideEditor = () => {
-  const [slides, setSlides] = useState([
-    {
-      id: 1,
-      title: "Slide 1",
-      subtitle: "Subtitle 1",
-      body: "This is the content of Slide 1",
-      theme: {
-        backgroundColor: "#ffffff",
-        textColor: "#000000",
-        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
-      },
-      image: null,
-    },
-    {
-      id: 2,
-      title: "Slide 2",
-      subtitle: "Subtitle 2",
-      body: "This is the content of Slide 2",
-      theme: {
-        backgroundColor: "#f8f9fa",
-        textColor: "#212529",
-        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
-      },
-      image: null,
-    },
-    {
-      id: 3,
-      title: "Slide 3",
-      subtitle: "Subtitle 3",
-      body: "This is the content of Slide 3",
-      theme: {
-        backgroundColor: "#e9ecef",
-        textColor: "#495057",
-        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
-      },
-      image: null,
-    },
-    {
-      id: 4,
-      title: "Slide 4",
-      subtitle: "Subtitle 4",
-      body: "This is the content of Slide 4",
-      theme: {
-        backgroundColor: "#dee2e6",
-        textColor: "#343a40",
-        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
-      },
-      image: null,
-    },
-    {
-      id: 5,
-      title: "Slide 5",
-      subtitle: "Subtitle 5",
-      body: "This is the content of Slide 5",
-      theme: {
-        backgroundColor: "#ced4da",
-        textColor: "#6c757d",
-        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
-      },
-      image: null,
-    },
-  ]);
+  const [slides, setSlides] = useState([]);
+  const [activeSlide, setActiveSlide] = useState(null);
 
-  const [activeSlide, setActiveSlide] = useState(slides[0]);
+  // Fetch data from the API  
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch(
+          "https://63e0-2405-201-300b-70fe-8bb-f380-8abc-6475.ngrok-free.app/api/slides"
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Response is not valid JSON");
+        }
+
+        const data = await response.json();
+        setSlides(data); // Set the slides state with the fetched data
+        setActiveSlide(data[0]); // Set the first slide as active
+      } catch (error) {
+        console.error("Error fetching slides:", error);
+      }
+    };
+
+    fetchSlides();
+  }, []);
 
   const handleSlideClick = (slide) => {
     setActiveSlide(slide);
@@ -127,6 +93,10 @@ const MergedSlideEditor = () => {
       },
     }));
   };
+
+  if (!activeSlide) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex h-screen">
