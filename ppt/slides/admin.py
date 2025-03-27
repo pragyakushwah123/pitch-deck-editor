@@ -1,13 +1,22 @@
 from django.contrib import admin
-from .models import Slide, File
+from .models import Slide
 
-@admin.register(Slide)
 class SlideAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'created_at', 'updated_at')
-    search_fields = ('title',)
-    list_filter = ('created_at',)
+    list_display = ("id", "title", "subtitle", "background_color", "text_color")
+    list_filter = ("background_color", "text_color")
+    search_fields = ("title", "subtitle", "body")
+    readonly_fields = ("id",)
 
-@admin.register(File)
-class FileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
-    search_fields = ('title',)
+    fieldsets = (
+        ("Slide Content", {
+            "fields": ("title", "subtitle", "body", "image")
+        }),
+        ("Theme Settings", {
+            "fields": ("background_color", "text_color")
+        }),
+        ("Font Sizes", {
+            "fields": ("title_font_size", "subtitle_font_size", "body_font_size")
+        }),
+    )
+
+admin.site.register(Slide, SlideAdmin)
