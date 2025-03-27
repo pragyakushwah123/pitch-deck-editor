@@ -1,5 +1,5 @@
 import { SlideProvider } from "./context/SlideContext";
-import MergedSlideEditor from "./components/Editor/MergedSlideEditor"; // Import the merged component
+import MergedSlideEditor from "./components/Editor/MergedSlideEditor";
 import React from "react";
 
 function App() {
@@ -9,7 +9,5 @@ function App() {
     </SlideProvider>
   );
 }
-
-
 
 export default App;

@@ -4,9 +4,66 @@ import ThemeSidebar from "./ThemeSidebar";
 
 const MergedSlideEditor = () => {
   const [slides, setSlides] = useState([
-    { id: 1, title: "Slide 1", subtitle: "Subtitle 1", body: "This is the content of Slide 1", theme: { backgroundColor: "#ffffff", textColor: "#000000" }, image: null },
-    { id: 2, title: "Slide 2", subtitle: "Subtitle 2", body: "This is the content of Slide 2", theme: { backgroundColor: "#ffffff", textColor: "#000000" }, image: null },
-    { id: 3, title: "Slide 3", subtitle: "Subtitle 3", body: "This is the content of Slide 3", theme: { backgroundColor: "#ffffff", textColor: "#000000" }, image: null },
+    {
+      id: 1,
+      title: "Slide 1",
+      subtitle: "Subtitle 1",
+      body: "This is the content of Slide 1",
+      theme: {
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
+      },
+      image: null,
+    },
+    {
+      id: 2,
+      title: "Slide 2",
+      subtitle: "Subtitle 2",
+      body: "This is the content of Slide 2",
+      theme: {
+        backgroundColor: "#f8f9fa",
+        textColor: "#212529",
+        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
+      },
+      image: null,
+    },
+    {
+      id: 3,
+      title: "Slide 3",
+      subtitle: "Subtitle 3",
+      body: "This is the content of Slide 3",
+      theme: {
+        backgroundColor: "#e9ecef",
+        textColor: "#495057",
+        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
+      },
+      image: null,
+    },
+    {
+      id: 4,
+      title: "Slide 4",
+      subtitle: "Subtitle 4",
+      body: "This is the content of Slide 4",
+      theme: {
+        backgroundColor: "#dee2e6",
+        textColor: "#343a40",
+        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
+      },
+      image: null,
+    },
+    {
+      id: 5,
+      title: "Slide 5",
+      subtitle: "Subtitle 5",
+      body: "This is the content of Slide 5",
+      theme: {
+        backgroundColor: "#ced4da",
+        textColor: "#6c757d",
+        fontSizes: { title: "2rem", subtitle: "1.5rem", body: "1rem" },
+      },
+      image: null,
+    },
   ]);
 
   const [activeSlide, setActiveSlide] = useState(slides[0]);
@@ -31,7 +88,9 @@ const MergedSlideEditor = () => {
       reader.onloadend = () => {
         setSlides((prevSlides) =>
           prevSlides.map((slide) =>
-            slide.id === activeSlide.id ? { ...slide, image: reader.result } : slide
+            slide.id === activeSlide.id
+              ? { ...slide, image: reader.result }
+              : slide
           )
         );
         setActiveSlide((prev) => ({ ...prev, image: reader.result }));
@@ -40,9 +99,38 @@ const MergedSlideEditor = () => {
     }
   };
 
+  const handleThemeChange = (property, value) => {
+    setSlides((prevSlides) =>
+      prevSlides.map((slide) =>
+        slide.id === activeSlide.id
+          ? {
+              ...slide,
+              theme: {
+                ...slide.theme,
+                [property]:
+                  property === "fontSizes"
+                    ? { ...slide.theme.fontSizes, ...value }
+                    : value,
+              },
+            }
+          : slide
+      )
+    );
+    setActiveSlide((prev) => ({
+      ...prev,
+      theme: {
+        ...prev.theme,
+        [property]:
+          property === "fontSizes"
+            ? { ...prev.theme.fontSizes, ...value }
+            : value,
+      },
+    }));
+  };
+
   return (
     <div className="flex h-screen">
-      {/* Left Slider */}
+      {/* Left Sidebar */}
       <div className="w-1/4 bg-gray-100 border-r overflow-y-auto">
         <h2 className="text-lg font-bold p-4">Slides</h2>
         <ul>
@@ -69,12 +157,17 @@ const MergedSlideEditor = () => {
           <div className="flex-1 p-8">
             <div
               className="w-full h-[600px] rounded-lg shadow-lg p-8"
-              style={{ backgroundColor: activeSlide.theme.backgroundColor }}
+              style={{
+                backgroundColor: activeSlide.theme.backgroundColor, // Apply background color
+              }}
             >
               <div
                 contentEditable
-                className="text-5xl font-bold mb-4"
-                style={{ color: activeSlide.theme.textColor }}
+                className="mb-4"
+                style={{
+                  color: activeSlide.theme.textColor,
+                  fontSize: activeSlide.theme.fontSizes.title, // Apply title font size
+                }}
                 onBlur={(e) => handleTextChange("title", e.target.textContent)}
                 suppressContentEditableWarning
               >
@@ -83,9 +176,14 @@ const MergedSlideEditor = () => {
 
               <div
                 contentEditable
-                className="text-3xl mb-8"
-                style={{ color: activeSlide.theme.textColor }}
-                onBlur={(e) => handleTextChange("subtitle", e.target.textContent)}
+                className="mb-8"
+                style={{
+                  color: activeSlide.theme.textColor,
+                  fontSize: activeSlide.theme.fontSizes.subtitle, // Apply subtitle font size
+                }}
+                onBlur={(e) =>
+                  handleTextChange("subtitle", e.target.textContent)
+                }
                 suppressContentEditableWarning
               >
                 {activeSlide.subtitle}
@@ -109,7 +207,10 @@ const MergedSlideEditor = () => {
               <div
                 contentEditable
                 className="text-lg"
-                style={{ color: activeSlide.theme.textColor }}
+                style={{
+                  color: activeSlide.theme.textColor,
+                  fontSize: activeSlide.theme.fontSizes.body, // Apply body font size
+                }}
                 onBlur={(e) => handleTextChange("body", e.target.textContent)}
                 suppressContentEditableWarning
               >
@@ -117,7 +218,10 @@ const MergedSlideEditor = () => {
               </div>
             </div>
           </div>
-          <ThemeSidebar />
+          <ThemeSidebar
+            theme={activeSlide.theme}
+            onThemeChange={handleThemeChange}
+          />
         </div>
       </div>
     </div>
