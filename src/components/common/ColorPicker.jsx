@@ -1,9 +1,7 @@
 const ColorPicker = ({ label, value, onChange }) => {
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium mb-2">
-        {label}
-      </label>
+      <label className="block text-sm font-medium mb-2">{label}</label>
       <div className="flex items-center space-x-2">
         <input
           type="color"
@@ -17,4 +15,4 @@ const ColorPicker = ({ label, value, onChange }) => {
   );
 };
 
-export default ColorPicker; 
+export default ColorPicker;

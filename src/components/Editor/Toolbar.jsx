@@ -9,7 +9,7 @@ const Toolbar = ({ activeSlide, setSlides, setActiveSlide }) => {
       title: activeSlide.title,
       subtitle: activeSlide.subtitle,
       body: activeSlide.body,
-      image: activeSlide.image,
+      // image: activeSlide.image,
       theme: activeSlide.theme,
     };
 

@@ -1,5 +1,5 @@
-import { useSlideContext } from '../../context/SlideContext';
-import Button from '../common/Button';
+import { useSlideContext } from "../../context/SlideContext";
+import Button from "../common/Button";
 
 const SlidePreview = ({ onClose }) => {
   const { state } = useSlideContext();
@@ -14,43 +14,43 @@ const SlidePreview = ({ onClose }) => {
             Close
           </Button>
         </div>
-        
-        <div 
+
+        <div
           className="w-full aspect-[16/9] rounded-lg shadow-lg p-8"
           style={{ backgroundColor: slide.theme.backgroundColor }}
         >
-          <h1 
+          <h1
             className="font-bold mb-4"
-            style={{ 
+            style={{
               color: slide.theme.textColor,
-              fontSize: slide.theme.fontSizes.title 
+              fontSize: slide.theme.fontSizes.title,
             }}
           >
             {slide.title}
           </h1>
-          
+
           <h2
             className="mb-8"
-            style={{ 
+            style={{
               color: slide.theme.textColor,
-              fontSize: slide.theme.fontSizes.subtitle 
+              fontSize: slide.theme.fontSizes.subtitle,
             }}
           >
             {slide.subtitle}
           </h2>
 
           {slide.image && (
-            <img 
-              src={slide.image} 
-              alt="Slide" 
+            <img
+              src={slide.image}
+              alt="Slide"
               className="max-w-md mb-8 mx-auto"
             />
           )}
 
           <p
-            style={{ 
+            style={{
               color: slide.theme.textColor,
-              fontSize: slide.theme.fontSizes.body 
+              fontSize: slide.theme.fontSizes.body,
             }}
           >
             {slide.body}
@@ -61,4 +61,4 @@ const SlidePreview = ({ onClose }) => {
   );
 };
 
-export default SlidePreview; 
+export default SlidePreview;

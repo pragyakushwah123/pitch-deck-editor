@@ -160,8 +160,56 @@ const MergedSlideEditor = () => {
     }));
   };
 
+  // const handleAddSlide = async () => {
+  //   setLoading(true);  // Show loading when adding a new slide
+
+  //   const newSlide = {
+  //     title: "New Slide",
+  //     subtitle: "Subtitle",
+  //     body: "Body content here...",
+  //     image: "",
+  //     theme: {
+  //       backgroundColor: "#ffffff",
+  //       textColor: "#000000",
+  //       fontSizes: {
+  //         title: "32px",
+  //         subtitle: "24px",
+  //         body: "18px",
+  //       },
+  //     },
+  //   };
+
+  //   try {
+  //     const response = await fetch("http://127.0.0.1:8000/api/slides/", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(newSlide),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to add slide");
+  //     }
+
+  //     const addedSlide = await response.json();
+  //     setSlides((prevSlides) => [...prevSlides, addedSlide]);
+  //     setActiveSlide(addedSlide);
+  //   } catch (error) {
+  //     console.error("Error adding slide:", error);
+  //   } finally {
+  //     setLoading(false);  // Hide loading after slide is added
+  //   }
+  // };
+
+  // if (loading) {
+  //   return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  // }
+
+  // if (!activeSlide) {
+  //   return <div>Loading...</div>;
+  // }
+
   if (!activeSlide) {
-    return <div>Loading...</div>;
+    return <div>LOADING......</div>;
   }
 
   return (
