@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Toolbar from "./Toolbar";
 import ThemeSidebar from "./ThemeSidebar";
 
 const MergedSlideEditor = () => {
   const [slides, setSlides] = useState([]);
   const [activeSlide, setActiveSlide] = useState(null);
+  const previousSlideRef = useRef(null); // To track the previous active slidedsfasdf
 
-  // Fetch data from the API  
+  // Fetch data from the API
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await fetch(
-          "https://63e0-2405-201-300b-70fe-8bb-f380-8abc-6475.ngrok-free.app/api/slides"
-        );
+        const response = await fetch("http://127.0.0.1:8000/api/slides/");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -34,6 +33,56 @@ const MergedSlideEditor = () => {
     fetchSlides();
   }, []);
 
+  // Auto-save changes when switching slides
+  useEffect(() => {
+    if (
+      previousSlideRef.current &&
+      previousSlideRef.current.id !== activeSlide?.id
+    ) {
+      const previousSlide = previousSlideRef.current;
+
+      // Prepare the payload with the updated slide data
+      const updatedData = {
+        title: previousSlide.title,
+        subtitle: previousSlide.subtitle,
+        body: previousSlide.body,
+        image: previousSlide.image,
+        theme: previousSlide.theme,
+      };
+
+      // Send the PATCH request to save the previous slide
+      fetch(`http://127.0.0.1:8000/api/slides/${previousSlide.id}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to auto-save the slide");
+          }
+          return response.json();
+        })
+        .then((updatedSlide) => {
+          console.log("Slide auto-saved successfully:", updatedSlide);
+
+          // Update the slides state with the updated slide
+          setSlides((prevSlides) =>
+            prevSlides.map((slide) =>
+              slide.id === updatedSlide.id ? updatedSlide : slide
+            )
+          );
+        })
+        .catch((error) => {
+          console.error("Error auto-saving slide:", error);
+        });
+    }
+
+    // Update the previousSlideRef to the current activeSlide
+    previousSlideRef.current = activeSlide;
+  }, [activeSlide]);
+
   const handleSlideClick = (slide) => {
     setActiveSlide(slide);
   };
@@ -49,19 +98,36 @@ const MergedSlideEditor = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSlides((prevSlides) =>
-          prevSlides.map((slide) =>
-            slide.id === activeSlide.id
-              ? { ...slide, image: reader.result }
-              : slide
-          )
-        );
-        setActiveSlide((prev) => ({ ...prev, image: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("image", file); // Append the image file to FormData
+
+      // Send the PATCH request with FormData
+      fetch(`http://127.0.0.1:8000/api/slides/${activeSlide.id}/`, {
+        method: "PATCH",
+        body: formData, // Use FormData as the request body
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update the slide image");
+          }
+          return response.json();
+        })
+        .then((updatedSlide) => {
+          console.log("Image updated successfully:", updatedSlide);
+
+          // Update the slides state with the updated slide
+          setSlides((prevSlides) =>
+            prevSlides.map((slide) =>
+              slide.id === updatedSlide.id ? updatedSlide : slide
+            )
+          );
+          setActiveSlide(updatedSlide);
+        })
+        .catch((error) => {
+          console.error("Error updating image:", error);
+        });
     }
   };
 
@@ -122,7 +188,7 @@ const MergedSlideEditor = () => {
 
       {/* Slide Editor */}
       <div className="flex-1 flex flex-col">
-        <Toolbar />
+        <Toolbar activeSlide={activeSlide} setSlides={setSlides} />
         <div className="flex flex-1">
           <div className="flex-1 p-8">
             <div
