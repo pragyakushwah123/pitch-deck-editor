@@ -1,5 +1,7 @@
 from django.db import models
 
+
+# Model representing a slide in the presentation
 class Slide(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255)
